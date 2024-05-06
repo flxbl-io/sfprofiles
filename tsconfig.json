@@ -1,0 +1,29 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "composite": true,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "outDir": "./lib",
+        "rootDir": "./src",
+        "inlineSourceMap": true,
+        "skipLibCheck": true,
+        "declaration": true,
+        "noImplicitAny": false,
+        "esModuleInterop": true,
+        "declarationMap": true,
+        "module": "commonjs",
+        "target": "ES2018",
+        "lib": ["ES2018"],
+        "resolveJsonModule": true,
+        "baseUrl": "src",
+        "paths": {
+            "@utils/*": ["utils/*"],
+            "@impl/*": ["impl/*"]
+        },
+        "allowJs": true
+
+    },
+    "include": ["./src/**/*"]
+}
+
