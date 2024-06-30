@@ -1,4 +1,4 @@
-import { Connection } from 'jsforce';
+import { Connection } from '@jsforce/jsforce-node';
 import { Sfpowerkit } from '@utils/sfpowerkit';
 import SFPLogger, {LoggerLevel } from '@flxbl-io/sfp-logger';
 import retry from 'async-retry';

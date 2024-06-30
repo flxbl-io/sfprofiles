@@ -1,6 +1,6 @@
 import { Sfpowerkit } from '@utils/sfpowerkit';
 import * as _ from 'lodash';
-import { Connection } from 'jsforce';
+import { Connection } from '@jsforce/jsforce-node';
 import QueryExecutor from '@utils/queryExecutor';
 import MetadataOperation from '@utils/metadataOperation';
 import { registry } from '@salesforce/source-deploy-retrieve';

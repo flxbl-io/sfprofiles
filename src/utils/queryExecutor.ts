@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Connection } from 'jsforce';
+import { Connection } from '@jsforce/jsforce-node';
 import SFPLogger, {LoggerLevel } from '@flxbl-io/sfp-logger';
 import retry from 'async-retry';
 

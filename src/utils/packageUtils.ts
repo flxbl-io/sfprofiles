@@ -1,4 +1,4 @@
-import { Connection } from 'jsforce';
+import { Connection } from '@jsforce/jsforce-node';
 
 let retry = require('async-retry');
 
