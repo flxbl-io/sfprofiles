@@ -1,6 +1,6 @@
 {
     "name": "@flxbl-io/sfprofiles",
-    "version": "5.1.1",
+    "version": "5.1.2",
     "description": "Salesforce Profile management",
     "keywords": [
         "sfdx-plugin",
