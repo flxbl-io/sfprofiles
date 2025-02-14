@@ -64,7 +64,7 @@ export default class QueryExecutor {
             return queryResult.map((record: any) => ({
                 attributes: {
                     type: objectType,
-                    url: `/services/data/v63.0/sobjects/${objectType}/${record.Id}` // TODO: API version should be dynamic
+                    url: `/services/data/v${this.conn.version}/sobjects/${objectType}/${record.Id}`
                 },
                 ...record
             }));
