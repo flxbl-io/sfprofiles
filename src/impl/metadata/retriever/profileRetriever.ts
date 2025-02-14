@@ -316,7 +316,7 @@ export default class ProfileRetriever {
             }
         });
         let permissionStr = permissions.join(', ');
-        let query = `SELECT Name, ${permissionStr} FROM Profile WHERE Name IN ('${profileNames.join("','")}')`;
+        let query = `SELECT Id, Name, ${permissionStr} FROM Profile WHERE Name IN ('${profileNames.join("','")}')`;
         query = decodeURIComponent(query);
         let executor = new QueryExecutor(this.conn);
         let profiles = await executor.executeQuery(query, false);
