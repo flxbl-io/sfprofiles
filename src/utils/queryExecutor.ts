@@ -55,13 +55,16 @@ export default class QueryExecutor {
         try {
             // Extract object type from query
             const objectType = this.getObjectTypeFromQuery(query);
+            const queryStream = await this.conn.bulk2.query(query);
 
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            const queryResult = await (await this.conn.bulk2.query(query)).toArray();
+            // Collect records from stream
+            const records: Record<any, any>[] = [];
+            for await (const record of queryStream) {
+                records.push(record);
+            }
 
             // Transform results to match REST API format
-            return queryResult.map((record: any) => ({
+            return records.map((record: any) => ({
                 attributes: {
                     type: objectType,
                     url: `/services/data/v${this.conn.version}/sobjects/${objectType}/${record.Id}`
