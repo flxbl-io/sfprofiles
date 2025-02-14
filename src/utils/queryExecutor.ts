@@ -7,47 +7,36 @@ export default class QueryExecutor {
     constructor(private conn: Connection) {}
 
     public async executeQuery(query: string, tooling: boolean) {
-        try {
-            // First try normal query
-            return await this.executeNormalQuery(query, tooling);
-        } catch (error) {
-            // If we get a header size error, fallback to bulk query
-            if (error.message?.includes('431') || error.message?.includes('Request Header Fields Too Large')) {
-                return await this.executeBulkQuery(query);
+        return await retry(
+            async () => {
+                try {
+                    // First try normal query
+                    return await this.executeNormalQuery(query, tooling);
+                } catch (error) {
+                    // If we get a header size error, fallback to bulk query
+                    if (error.message?.includes('431') || error.message?.includes('Request Header Fields Too Large')) {
+                        return await this.executeBulkQuery(query);
+                    }
+                    throw error;
+                }
+            },
+            {
+                retries: 5,
+                minTimeout: 2000,
+                onRetry: (error) => {
+                    SFPLogger.log(`Retrying Network call due to ${error.message}`, LoggerLevel.INFO);
+                },
             }
-            throw new Error(`Unable to fetch ${query}`);
-        }
+        );
     }
 
     private async executeNormalQuery(query: string, tooling: boolean) {
         let results;
 
         if (tooling) {
-            results = await retry(
-                async () => {
-                    return (await this.conn.tooling.query(query)) as any;
-                },
-                {
-                    retries: 5,
-                    minTimeout: 2000,
-                    onRetry: (error) => {
-                        SFPLogger.log(`Retrying Network call due to ${error.message}`, LoggerLevel.INFO);
-                    },
-                }
-            );
+            results = (await this.conn.tooling.query(query)) as any;
         } else {
-            results = await retry(
-                async () => {
-                    return (await this.conn.query(query)) as any;
-                },
-                {
-                    retries: 5,
-                    minTimeout: 2000,
-                    onRetry: (error) => {
-                        SFPLogger.log(`Retrying Network call due to ${error.message}`, LoggerLevel.INFO);
-                    },
-                }
-            );
+            results = (await this.conn.query(query)) as any;
         }
 
         if (!results.done) {
@@ -95,39 +84,9 @@ export default class QueryExecutor {
     public async queryMore(url: string, tooling: boolean) {
         let result;
         if (tooling) {
-            result = await retry(
-                async () => {
-                    try {
-                        return (await this.conn.tooling.queryMore(url)) as any;
-                    } catch (error) {
-                        throw new Error(`Unable to fetch ${url}`);
-                    }
-                },
-                {
-                    retries: 5,
-                    minTimeout: 2000,
-                    onRetry: (error) => {
-                        SFPLogger.log(`Retrying Network call due to ${error.message}`, LoggerLevel.INFO);
-                    },
-                }
-            );
+            result = (await this.conn.tooling.queryMore(url)) as any;
         } else {
-            result = await retry(
-                async () => {
-                    try {
-                        return (await this.conn.tooling.query(url)) as any;
-                    } catch (error) {
-                        throw new Error(`Unable to fetch ${url}`);
-                    }
-                },
-                {
-                    retries: 5,
-                    minTimeout: 2000,
-                    onRetry: (error) => {
-                        SFPLogger.log(`Retrying Network call due to ${error.message}`, LoggerLevel.INFO);
-                    },
-                }
-            );
+            result = (await this.conn.queryMore(url)) as any;
         }
         return result;
     }
